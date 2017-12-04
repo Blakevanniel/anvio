@@ -27,335 +27,330 @@
  */
 function isEmpty(obj){
     return Object.keys(obj).length === 0;
-  }
-  
-  //Returns the length of the largest object (string, in our case) in an array
-  function maxLength(arr){
-      var length = 0;
-      for (var i = 0; i < arr.length; i++)
-      {
-          if (arr[i].length > length){
-              length = arr[i].length;
-          }
-      }
-      return length;
-  }
-  
-  //Use an array of dictionaries. The key is the amino acid, and the data is the color, or "null" if none
-  //Input: an array of strings (characters)
-  //Returns: a 2D array of dictionaries
-  function determineColor(sequences_array){
-      console.log(sequences_array);
-      var cols = maxLength(sequences_array);
-      var rows = sequences_array.length;
-      var results = [];
-      for (var n = 0; n < rows; n++){
-          results.push([]);
-          for (var c = 0; c < cols; c++){
-              results[n].push("");
-          }
-      }
-      console.log(results);
-      //return;
+}
+
+//Returns the length of the largest object (string, in our case) in an array
+function maxLength(arr){
+    var length = 0;
+    for (var i = 0; i < arr.length; i++)
+    {
+        if (arr[i].length > length){
+            length = arr[i].length;
+        }
+    }
+    return length;
+}
+
+//Use an array of dictionaries. The key is the amino acid, and the data is the color, or "null" if none
+//Input: an array of strings (characters)
+//Returns: a 2D array of dictionaries
+function determineColor(sequences_array){
+    var cols = maxLength(sequences_array);
+    var rows = sequences_array.length;
+    var results = [];
+    for (var n = 0; n < rows; n++){
+        results.push([]);
+        for (var c = 0; c < cols; c++){
+            results[n].push("");
+        }
+    }
+    //return;
 
 
-      for(var i = 0; i < cols; i++) { 
-          var column = [];
-          for (var l = 0; l < rows; l++) {
-              var val = ""
+    for(var i = 0; i < cols; i++) { 
+        var column = [];
+        for (var l = 0; l < rows; l++) {
+            var val = ""
 /*               if (sequences_array[l] === ""){
-                  continue;
-              } */
-              if(i < sequences_array[l].length) {
-                  var x = sequences_array[l][i];
-                  column.push(x);
-                  //console.log(positions[l]);
+                continue;
+            } */
+            if(i < sequences_array[l].length) {
+                var x = sequences_array[l][i];
+                column.push(x);
+                //console.log(positions[l]);
+          }
+        }
+        var _positions = colorAlgorithm(column);
+        for (var l = 0; l < rows; l++) {
+            if (_positions[l] != undefined){
+                //console.log(_positions[l]);
+                results[l].push(_positions[l]); //why does this drop results[l].size to 0?
+                //console.log(results[l][i]);
+                //console.log(results);
             }
-          }
-          console.log(column);
-          var _positions = colorAlgorithm(column);
-          console.log(_positions);
-          for (var l = 0; l < rows; l++) {
-              if (_positions[l] != undefined){
-                  //console.log(_positions[l]);
-                  results[l].push(_positions[l]); //why does this drop results[l].size to 0?
-                  //console.log(results[l][i]);
-                  //console.log(results);
-              }
-          }
-      }
+        }
+    }
 
-      console.log(results);
-      return results;
-  }
-  
-  
-  //compares all of the aa's and assigns colors or "null" to the respective amino acid
-  //input: the "positions" array from determineColor
-  //output: the array with all of the color assignments
-  //I can potentially combine all three of these into a single function to be more efficient.
-  function colorAlgorithm(positions){
-      for (aa in positions){
-          if (aboveThreshold(positions,positions[aa])) {
-              positions[aa] = color(positions, positions[aa]); 	
-          }
-      }
-      return positions;
-  }
-  
-  
-  //does the actual comparisons
-  function aboveThreshold(positions,aa) { 
-      var number = 0;
-      for (acid in positions) {
-          if (acid === '') {
-              continue;
-          }
-          number++;
-      }
-      var count = 0.0;
-      var count2 = 0.0;
-      var count3 = 0.0;
-      
-      var letter = Object.keys(aa)[0];
-      switch (letter) {
-          case "A":
-          case "I":
-          case "L":
-          case "M":
-          case "F":
-          case "W":
-          case "V":
-              for (amino in positions){
-                  var acid = Object.keys(positions[amino])[0];
-                  if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
-                      count = count + 1;
-                  }
-                  }
-                if ( (100 * count) / number >= 60) {
-                  return true;
+    return results;
+}
+
+
+//compares all of the aa's and assigns colors or "null" to the respective amino acid
+//input: the "positions" array from determineColor
+//output: the array with all of the color assignments
+//I can potentially combine all three of these into a single function to be more efficient.
+function colorAlgorithm(positions){
+    for (aa in positions){
+        if (aboveThreshold(positions,positions[aa])) {
+            positions[aa] = color(positions, positions[aa]); 	
+        }
+    }
+    return positions;
+}
+
+
+//does the actual comparisons
+function aboveThreshold(positions, aa) { 
+    var number = 0;
+    for (acid in positions) {
+        if (acid === '') {
+            continue;
+        }
+        number++;
+    }
+    var count = 0.0;
+    var count2 = 0.0;
+    var count3 = 0.0;
+    
+    var letter = Object.keys(aa)[0];
+    switch (letter) {
+        case "A":
+        case "I":
+        case "L":
+        case "M":
+        case "F":
+        case "W":
+        case "V":
+            for (amino in positions){
+                var acid = Object.keys(positions[amino])[0];
+                if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
+                    count = count + 1;
                 }
-                break;
-          case "P":
-          case "G":
+                }
+              if ( (100 * count) / number >= 60) {
                 return true;
-                break; //P and G have a 0% threshold
-          case "R":
-          case "K":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "K" || acid == "R") {
-                      count = count + 1;
-                      count2 = count2 + 1;
-                  }
-                  else if (acid == "Q") {
-                      count2 = count2 + 1;
-                  }
+              }
+              break;
+        case "P":
+        case "G":
+              return true;
+              break; //P and G have a 0% threshold
+        case "R":
+        case "K":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "K" || acid == "R") {
+                    count = count + 1;
+                    count2 = count2 + 1;
                 }
-                if ((100 * count) / number >= 60 || (100 * count2) / number >= 80) {
-                  return true;
+                else if (acid == "Q") {
+                    count2 = count2 + 1;
                 }
-                break;
-          case "N":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "N"){
-                      count = count + 1;
-                      count2 = count2 + 1;
-                  }
-                  if (acid == "Y"){
-                      count2 = count2 + 1;
-                  }
+              }
+              if ((100 * count) / number >= 60 || (100 * count2) / number >= 80) {
+                return true;
+              }
+              break;
+        case "N":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "N"){
+                    count = count + 1;
+                    count2 = count2 + 1;
                 }
-                if ((count * 100) / number >= 50 || (count2 * 100) / number >= 85) {
-                      return true;
+                if (acid == "Y"){
+                    count2 = count2 + 1;
                 }
-                break;
-          case "C":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
-                      count = count + 1;
-                  }
-                  else if (acid == "C"){
-                      count2 = count2 + 1;
-                  }
+              }
+              if ((count * 100) / number >= 50 || (count2 * 100) / number >= 85) {
+                    return true;
+              }
+              break;
+        case "C":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
+                    count = count + 1;
                 }
-                if ((count * 100) / number >= 60 || count2 == number) {
-                  return true;
+                else if (acid == "C"){
+                    count2 = count2 + 1;
                 }
-                break;
-          case "Q":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "K" || acid == "R"){
-                      count++;
-                      count3++;
-                  }else if (acid == "Q" || acid == "E"){
-                      count2++;
-                      count3++;
-                  }
+              }
+              if ((count * 100) / number >= 60 || count2 == number) {
+                return true;
+              }
+              break;
+        case "Q":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "K" || acid == "R"){
+                    count++;
+                    count3++;
+                }else if (acid == "Q" || acid == "E"){
+                    count2++;
+                    count3++;
                 }
-                if ((count * 100) / number >= 60 || (count2 * 100) / number >= 50 || (count3 * 100) / number >= 85){
-                  return true;
+              }
+              if ((count * 100) / number >= 60 || (count2 * 100) / number >= 50 || (count3 * 100) / number >= 85){
+                return true;
+              }
+              break;
+        case "E":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "K" || acid == "R"){
+                    count++;
+                }else if (acid == "Q" || acid == "E"){
+                    count2++;
+                    count3++;
+                }else if (acid == "D"){
+                    count3++;
                 }
-                break;
-          case "E":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "K" || acid == "R"){
-                      count++;
-                  }else if (acid == "Q" || acid == "E"){
-                      count2++;
-                      count3++;
-                  }else if (acid == "D"){
-                      count3++;
-                  }
+              }
+              if ((count * 100) / number >= 60 || (count2 * 100) / number >= 50 || (count3 * 100) / number >= 85){
+                return true;
+              }
+              break;
+        case "D":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "K" || acid == "R"){
+                    count++;
+                    count2++;
+                }else if (acid == "Q"){
+                    count2++;
+                }else if (acid == "E" || acid == "D"){
+                    count3++;
                 }
-                if ((count * 100) / number >= 60 || (count2 * 100) / number >= 50 || (count3 * 100) / number >= 85){
-                  return true;
+              }
+              if ((count * 100) / number >= 60 || (count2 * 100) / number >= 85 || (count3 * 100) / number >= 50){
+                return true;
+              }
+              break;
+        case "H":
+        case "Y":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
+                    count++;
+                    count2++;
+                }else if (acid == "Y" || acid == "Q"){
+                    count2++;
                 }
-                break;
-          case "D":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "K" || acid == "R"){
-                      count++;
-                      count2++;
-                  }else if (acid == "Q"){
-                      count2++;
-                  }else if (acid == "E" || acid == "D"){
-                      count3++;
-                  }
+              }
+              if ((count * 100) / number >= 60 || (count2 * 100) / number >= 85) {
+                return true;
+              }
+              break;
+        case "S":
+        case "T":
+          for (amino in positions){
+              var acid = Object.keys(positions[amino])[0];
+                if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
+                    count++;
+                }else if (acid == "S" || acid == "T"){
+                    count2++;
                 }
-                if ((count * 100) / number >= 60 || (count2 * 100) / number >= 85 || (count3 * 100) / number >= 50){
-                  return true;
-                }
-                break;
-          case "H":
-          case "Y":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
-                      count++;
-                      count2++;
-                  }else if (acid == "Y" || acid == "Q"){
-                      count2++;
-                  }
-                }
-                if ((count * 100) / number >= 60 || (count2 * 100) / number >= 85) {
-                  return true;
-                }
-                break;
-          case "S":
-          case "T":
-            for (amino in positions){
-                var acid = Object.keys(positions[amino])[0];
-                  if (acid == "W" || acid == "L" || acid == "V" || acid == "I" || acid == "M" || acid == "A" || acid == "F" || acid == "C" || acid == "H" || acid == "P") {
-                      count++;
-                  }else if (acid == "S" || acid == "T"){
-                      count2++;
-                  }
-                }
-                if ((count * 100) / number >= 60 || (count2 * 100) / number >= 50) {
-                  return true;
-                }
-                break;
-          default: break;
-      }
-      return false;	
-  
-  }
-  
-  function color(positions, aa){
-      /*Two problems: 
-          2) Need to put in the color in the definition slot, not just return it
-          */
-      var x = '';
-      var letter = Object.keys(aa)[0];
-      switch(letter){
-          case "A":
-          case "I":
-          case "L":
-          case "M":
-          case "F":
-          case "W":
-          case "V":
-                x = "BLUE";
-                break;
-          case "R":
-          case "K":
-                x = "RED";
-                break;
-          case "N":
-          case "Q":
-          case "S":
-          case "T":
-                x = "GREEN";
-                break;
-          case "E":
-          case "D":
-                x = "MAGENTA";
-                break;
-          case "G":
-              x = "ORANGE";
-                break;
-          case "H":
-          case "Y":
-                x = "CYAN";
-                break;
-          case "P": 
-              x = "YELLOW";
-                break;
-          case "C":
-                  check: {
-                  for (amino in positions){
-                      var acid = Object.keys(positions[amino])[0];
-                      if (acid != "C"){
-                          x = "BLUE";
-                          break check;
-                        }
-                    }
-                  x = "PINK";
-                }
-                break;
-          default: x = null;
-      }
-      aa[letter] = x;
-      return aa;
-  }
-  
-  //Returns the hexadecimal value of the colors
-  //Precondition: the amino acid is of type {letter:color}
-  function readColor(aa) {
-      var letter = Object.keys(aa)[0];
-      var color = aa[letter];
-      var ans;
-      switch(color){
-          case "BLUE" : ans = 0x0000FF;
-                                      break;
-          case "RED" : ans = 0xFF0000;
-                                      break;
-          case "GREEN" : ans = 0x008000;
-                                      break;
-          case "MAGENTA" : ans = 0xFF00FF;
-                                      break;
-          case "ORANGE" : ans = 0xFFA500
-                                      break;
-          case "CYAN" : ans = 0x00FFFF;
-                                      break;
-          case "YELLOW" : ans = 0xFFFF00;
-                                      break;
-          case "PINK" : ans = 0xFFC0CB;
-                                      break;
-          default: ans = 0x000000;
-      }
-      return ans;
-  }
+              }
+              if ((count * 100) / number >= 60 || (count2 * 100) / number >= 50) {
+                return true;
+              }
+              break;
+        default: break;
+    }
+    return false;	
 
-  /********************************************************************
-   * END COLORCODE.JS
-   ********************************************************************/
+}
+
+function color(positions, aa){
+    /*Two problems: 
+        2) Need to put in the color in the definition slot, not just return it
+        */
+    var x = '';
+    var letter = Object.keys(aa)[0];
+    switch(letter){
+        case "A":
+        case "I":
+        case "L":
+        case "M":
+        case "F":
+        case "W":
+        case "V":
+              x = "BLUE";
+              break;
+        case "R":
+        case "K":
+              x = "RED";
+              break;
+        case "N":
+        case "Q":
+        case "S":
+        case "T":
+              x = "GREEN";
+              break;
+        case "E":
+        case "D":
+              x = "MAGENTA";
+              break;
+        case "G":
+            x = "ORANGE";
+              break;
+        case "H":
+        case "Y":
+              x = "CYAN";
+              break;
+        case "P": 
+            x = "YELLOW";
+              break;
+        case "C":
+                check: {
+                for (amino in positions){
+                    var acid = Object.keys(positions[amino])[0];
+                    if (acid != "C"){
+                        x = "BLUE";
+                        break check;
+                      }
+                  }
+                x = "PINK";
+              }
+              break;
+        default: x = null;
+    }
+    aa[letter] = x;
+    return aa;
+}
+
+//Returns the hexadecimal value of the colors
+//Precondition: the amino acid is of type {letter:color}
+function readColor(aa) {
+    var letter = Object.keys(aa)[0];
+    var color = aa[letter];
+    var ans;
+    switch(color){
+        case "BLUE" : ans = 0x0000FF;
+                                    break;
+        case "RED" : ans = 0xFF0000;
+                                    break;
+        case "GREEN" : ans = 0x008000;
+                                    break;
+        case "MAGENTA" : ans = 0xFF00FF;
+                                    break;
+        case "ORANGE" : ans = 0xFFA500
+                                    break;
+        case "CYAN" : ans = 0x00FFFF;
+                                    break;
+        case "YELLOW" : ans = 0xFFFF00;
+                                    break;
+        case "PINK" : ans = 0xFFC0CB;
+                                    break;
+        default: ans = 0x000000;
+    }
+    return ans;
+}
+
+/********************************************************************
+ * END COLORCODE.JS
+ ********************************************************************/
 
 
 var VIEWER_WIDTH = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
@@ -442,32 +437,29 @@ function createDisplay(){
     var offset = 0;
 
     var acid_sequences = [];
+    for (var layer_id = 0; layer_id < state['layer-order'].length; layer_id++)
+    {
+        var layer = state['layer-order'][layer_id];
 
-    for (var index = 0; index < state['layer-order'].length; index++){
-        var seq = state['layer-order'][index];
-        var id = pc_data.genomes.indexOf(seq);
-        if (id === -1)
+        if (pc_data.genomes.indexOf(layer) === -1)
             continue;
-       var call_id = pc_data.gene_caller_ids_in_genomes[seq]; //call_id is an array; empty, or one element with the id
-       var str = (pc_data.aa_sequences_in_pc[seq])[call_id];
-       if (str === undefined) {
-           str = "";
-       }
-       acid_sequences.push(str);
+
+        pc_data.gene_caller_ids_in_genomes[layer].forEach(function(caller_id) {
+            acid_sequences.push(pc_data.aa_sequences_in_pc[layer][caller_id]);
+        });
     }
-    var colored_sequences = determineColor(acid_sequences); //I have to implement caller ids and make a dictionary out of this
-    console.log(colored_sequences);
-    //colored_sequences fails
-    for (var index = 0; index < state['layer-order'].length; index++){
-        var seq = state['layer-order'][index];
-        var id = pc_data.genomes.indexOf(seq);
-        if (id === -1)
-            continue;
-       var call_id = pc_data.gene_caller_ids_in_genomes[seq];
-       (pc_data.aa_sequences_in_pc[seq])[call_id] = colored_sequences[index];
+
+    var max_length = maxLength(acid_sequences);
+    var all_positions = [];
+
+    for (var i=0; i < max_length; i++) {
+        var new_item = [];
+        for (var j=0; j < acid_sequences.length; j++) {
+            new_item.push(acid_sequences[j][i]);
+        }
+        all_positions.push(new_item);
     }
-    console.log(pc_data.aa_sequences_in_pc);
-    //deal with efficiency later
+
 
     while (true)
     {
@@ -524,21 +516,16 @@ function createDisplay(){
                 text.setAttribute('font-weight', '100');
                 text.setAttribute('style', 'alignment-baseline:text-before-edge');
                 text.setAttribute('class', 'sequence');
-                //text.appendChild(document.createTextNode(sequence.substr(offset, sequence_wrap)));
-                //text.appendChild(document.createTextNode());
 
-                _sequence = sequence.splice(offset, sequence_wrap);
+                _sequence = sequence.substr(offset, sequence_wrap);
                 for (var _letter_index=0; _letter_index < _sequence.length; _letter_index++) {
                     var tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-                    var num = Object.keys(_sequence)[_letter_index];
-                    var acid = _sequence[num];
-                    var txt = Object.keys(acid)[0];
-                    tspan.setAttribute('fill', readColor(acid).toString()); //USE THIS to change color
-                    tspan.appendChild(document.createTextNode(txt));
+                    var acid = _sequence[_letter_index];
+                    tspan.setAttribute('fill', 'red'); //readColor(acid).toString()); //USE THIS to change color
+                    tspan.appendChild(document.createTextNode(acid));
 		            tspan.setAttribute('style', 'alignment-baseline:text-before-edge');
                     text.appendChild(tspan);
                 } 
-		
 
                 fragment.appendChild(text);
 
